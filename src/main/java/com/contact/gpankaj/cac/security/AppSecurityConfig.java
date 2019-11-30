@@ -1,0 +1,73 @@
+package com.contact.gpankaj.cac.security;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+@Configuration
+@EnableWebSecurity
+public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
+
+	@Autowired
+	private UserDetailsService userDetailsService;
+	
+	@Autowired
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
+	
+	@Bean
+	public AuthenticationProvider authProvider() {
+		DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+		provider.setUserDetailsService(userDetailsService);
+		provider.setPasswordEncoder(new BCryptPasswordEncoder());
+		
+		return provider;
+	}
+
+	
+
+
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		// TODO Auto-generated method stub
+		http
+		.csrf().disable()
+		.formLogin()
+		.and()
+		.authorizeRequests()
+		.antMatchers("/").permitAll()
+		.antMatchers("/home").permitAll()
+		.antMatchers("/index").permitAll()
+		.antMatchers("/login").permitAll()
+		.antMatchers("/register").permitAll()
+		.antMatchers("/*").hasAnyAuthority("USER");
+	}
+
+	/*
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		// TODO Auto-generated method stub
+		http.csrf().disable()
+		.formLogin()
+	}
+	*/
+	
+	/*
+	@Bean
+	@Override
+	protected UserDetailsService userDetailsService() {
+		// TODO Auto-generated method stub
+		List<UserDetails> users = new ArrayList();
+		users.add(User.withDefaultPasswordEncoder().username("naveen").password("naveen").roles("USER").build());
+		return new InMemoryUserDetailsManager(users);
+	}*/
+	
+}
