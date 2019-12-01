@@ -15,7 +15,7 @@ public class HomeController {
 		ModelAndView modelAndView = new ModelAndView();
 		UserService userService = new UserServiceImpl();
 		modelAndView.addObject("users", userService);
-		modelAndView.setViewName("home.html");
+		modelAndView.setViewName("index.html");
 		return modelAndView;
 		
 	}
